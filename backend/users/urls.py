@@ -7,4 +7,9 @@ urlpatterns = [
         views.UserCreate.as_view(),
         name='user-create'
     ),
+    path(
+        'users/login/',
+        views.UserLogin.as_view(),
+        name='user-login',
+    )
 ]
