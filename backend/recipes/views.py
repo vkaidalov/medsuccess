@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
-from recipes.models import Recipe
+from recipes.models import Recipe, Dose
 from recipes.serializers import RecipeSerializer, DoseSerializer
 
 
@@ -228,9 +228,43 @@ class DoseList(APIView):
         return Response(dose_serializer.data, status=status.HTTP_201_CREATED)
 
 
-# class DoseDetail(APIView):
-#     """
-#     Delete a dose from a recipe as a doctor.
-#     Write the `date_consumed` field of a dose as a patient.
-#     """
-#     def delete(self, request, fk, pk):
+class DoseDetail(APIView):
+    """
+    Delete a dose from a recipe as a doctor.
+    Write the `date_consumed` field of a dose as a patient.
+    """
+    def get_recipe(self, pk):
+        try:
+            return Recipe.objects.get(pk=pk)
+        except Recipe.DoesNotExist:
+            raise Http404
+
+    def get_dose(self, pk):
+        try:
+            return Dose.objects.get(pk=pk)
+        except Dose.DoesNotExist:
+            raise Http404
+
+    def delete(self, request, fk, pk):
+        recipe = self.get_recipe(fk)
+
+        if recipe.doctor != request.user:
+            raise Http404
+
+        if recipe.is_accepted is not None:
+            return Response(
+                {
+                    "is_accepted": ["Can't add a dose to the accepted/declined recipe."]
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        dose = self.get_dose(pk)
+
+        if dose.recipe != recipe:
+            raise Http404
+
+        dose.delete()
+        return Response(
+            status=status.HTTP_204_NO_CONTENT,
+        )

@@ -13,5 +13,9 @@ urlpatterns = [
     path(
         'recipes/<int:fk>/doses/',
         views.DoseList.as_view(),
+    ),
+    path(
+        'recipes/<int:fk>/doses/<int:pk>/',
+        views.DoseDetail.as_view(),
     )
 ]
