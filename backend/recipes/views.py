@@ -290,6 +290,14 @@ class DoseDetail(APIView):
         if dose.recipe != recipe:
             raise Http404
 
+        if dose.date_consumed is not None:
+            return Response(
+                {
+                    "date_consumed": ["The dose is already consumed."]
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         try:
             datetime = parse_datetime(request.data["date_consumed"])
         except KeyError:
