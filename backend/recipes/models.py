@@ -17,3 +17,14 @@ class Recipe(models.Model):
     medicine = models.CharField(max_length=128)
     reason = models.TextField()
     is_accepted = models.BooleanField(null=True, default=None)
+
+
+class Dose(models.Model):
+    recipe = models.ForeignKey(
+        'recipes.Recipe',
+        related_name='doses',
+        on_delete=models.CASCADE
+    )
+    date_assigned = models.DateTimeField()
+    date_consumed = models.DateTimeField(null=True, default=None)
+    quantity = models.DecimalField(max_digits=6, decimal_places=2)
