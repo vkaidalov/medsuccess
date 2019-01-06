@@ -9,5 +9,9 @@ urlpatterns = [
     path(
         'recipes/<int:pk>/',
         views.RecipeDetail.as_view(),
+    ),
+    path(
+        'recipes/<int:fk>/doses/',
+        views.DoseList.as_view(),
     )
 ]

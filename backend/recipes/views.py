@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
 from recipes.models import Recipe
-from recipes.serializers import RecipeSerializer
+from recipes.serializers import RecipeSerializer, DoseSerializer
 
 
 class RecipeList(APIView):
@@ -180,3 +180,57 @@ class RecipeDetail(APIView):
         return Response(
             status=status.HTTP_204_NO_CONTENT,
         )
+
+
+class DoseList(APIView):
+    """
+    Create a new dose for a recipe as a doctor.
+    """
+
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_recipe(self, pk):
+        try:
+            return Recipe.objects.get(pk=pk)
+        except Recipe.DoesNotExist:
+            raise Http404
+
+    def post(self, request, fk):
+        """
+        The method allows doctors to add a new dose to a recipe.
+        """
+        # TODO: check if fk in request.data is the same with <int:fk>
+        # TODO: check if `date_consumed` is None
+        recipe = self.get_recipe(fk)
+
+        if recipe.doctor != request.user:
+            return Response(
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if recipe.is_accepted is not None:
+            return Response(
+                {
+                    "is_accepted": ["Can't add a dose to the accepted/declined recipe."]
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        dose_serializer = DoseSerializer(data=request.data)
+
+        if not dose_serializer.is_valid():
+            return Response(
+                dose_serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        dose_serializer.save()
+        return Response(dose_serializer.data, status=status.HTTP_201_CREATED)
+
+
+# class DoseDetail(APIView):
+#     """
+#     Delete a dose from a recipe as a doctor.
+#     Write the `date_consumed` field of a dose as a patient.
+#     """
+#     def delete(self, request, fk, pk):
