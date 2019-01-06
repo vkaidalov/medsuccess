@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -34,13 +35,23 @@ class RecipeList(APIView):
         )
 
 
-# class RecipeDetail(APIView):
-#     """
-#     Retrieve a recipe instance.
-#     Update or delete a recipe instance as a doctor
-#     while `is_accepted` is not NULL.
-#     Accept or don't accept a recipe instance as patient
-#     while `is_accepted` is not NULL.
-#     """
-#
-#
+class RecipeDetail(APIView):
+    """
+    Retrieve a recipe instance.
+    Update or delete a recipe instance as a doctor
+    while `is_accepted` is not NULL.
+    Accept or don't accept a recipe instance as patient
+    while `is_accepted` is not NULL.
+    """
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_object(self, pk):
+        try:
+            return Recipe.objects.get(pk=pk)
+        except Recipe.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk):
+        recipe = self.get_object(pk)
+        serializer = RecipeSerializer(recipe)
+        return Response(serializer.data)
