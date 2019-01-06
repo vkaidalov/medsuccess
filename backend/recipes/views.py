@@ -22,16 +22,35 @@ class RecipeList(APIView):
         return Response(serializer.data)
 
     def post(self, request):
-        serializer = RecipeSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+        # TODO: Restrict a doctor to specify the `is_accepted` field.
+        try:
+            if request.data['doctor'] != request.user.id:
+                return Response(
+                    {
+                        "doctor": ["Only the creator of the recipe can be the doctor."]
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        except KeyError:
             return Response(
-                serializer.data,
-                status=status.HTTP_201_CREATED,
+                {
+                    "doctor": ["This field is required."]
+                },
+                status=status.HTTP_400_BAD_REQUEST,
             )
+
+        serializer = RecipeSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer.save()
         return Response(
-            serializer.errors,
-            status=status.HTTP_400_BAD_REQUEST,
+            serializer.data,
+            status=status.HTTP_201_CREATED,
         )
 
 
@@ -53,5 +72,111 @@ class RecipeDetail(APIView):
 
     def get(self, request, pk):
         recipe = self.get_object(pk)
+
+        if recipe.doctor != request.user and recipe.patient != request.user:
+            raise Http404
+
         serializer = RecipeSerializer(recipe)
         return Response(serializer.data)
+
+    def put(self, request, pk):
+        """
+        This method works only for patients.
+        A patient can accept or decline a recipe if `is_accepted` equals NULL.
+        """
+        recipe = self.get_object(pk)
+
+        if recipe.patient != request.user:
+            return Response(
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if recipe.is_accepted is not None:
+            return Response(
+                {
+                    "is_accepted": ["The recipe is already accepted or declined."]
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            is_accepted = request.data['is_accepted']
+        except KeyError:
+            return Response(
+                {
+                    "is_accepted": ["The field is required."]
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if type(is_accepted) != bool:
+            return Response(
+                {
+                    "is_accepted": ["The field must be true/false."]
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        recipe.is_accepted = is_accepted
+        recipe.save()
+
+        serializer = RecipeSerializer(recipe)
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
+
+    def patch(self, request, pk):
+        # TODO: Restrict a doctor to modify the `is_accepted` field.
+        """
+        This method works only for doctors.
+        A doctor can modify fields and assign
+        a patient to the recipe to be accepted/declined.
+        """
+        recipe = self.get_object(pk)
+
+        if recipe.doctor != request.user:
+            return Response(
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if recipe.is_accepted is not None:
+            return Response(
+                {
+                    "is_accepted": ["Can't modify the accepted/declined recipe."]
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = RecipeSerializer(recipe, data=request.data)
+
+        if not serializer.is_valid():
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer.save()
+        return Response(serializer.data)
+
+    def delete(self, request, pk):
+        recipe = self.get_object(pk)
+
+        if recipe.doctor != request.user:
+            return Response(
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if recipe.is_accepted is not None:
+            return Response(
+                {
+                    "is_accepted": ["Can't delete the accepted/declined recipe."]
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        recipe.delete()
+
+        return Response(
+            status=status.HTTP_204_NO_CONTENT,
+        )
