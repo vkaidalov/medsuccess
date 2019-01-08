@@ -7,7 +7,8 @@
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+// but I use ".." because of highlight
+import HelloWorld from "../components/HelloWorld.vue";
 
 export default {
   name: "home",
