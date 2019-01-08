@@ -1,28 +1,37 @@
 <template>
-    <div class="navigation">
-        <ul>
-            <li>
-                <router-link class="brand" to="/">
-                    <strong>MedSuccess</strong>
-                </router-link>
-            </li>
-        </ul>
-        <ul>
-            <!--TODO: add router-link`s-->
-            <li>
-                Login
-            </li>
-            <li>
-                Register
-            </li>
-        </ul>
-    </div>
+  <div class="navigation">
+    <ul>
+      <li>
+        <router-link class="brand" to="/">
+          <strong>MedSuccess</strong>
+        </router-link>
+      </li>
+    </ul>
+    <ul>
+      <!--TODO: add `v-if` directives-->
+      <li>
+        <router-link to="/register">Register</router-link>
+      </li>
+      <li>
+        <router-link to="/login">Login</router-link>
+      </li>
+      <li @click="logout">
+        <span class="logout">Logout</span>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
-    export default {
-        name: "Navigation"
+  export default {
+    name: "Navigation",
+    methods: {
+      logout: function() {
+        // TODO: write the function body
+        alert("I am logout!");
+      }
     }
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -30,6 +39,7 @@
     color: white;
     text-decoration: none;
   }
+
   .navigation {
     display: flex;
     color: white;
@@ -37,10 +47,10 @@
     background-color: #006951;
     padding: 5px;
 
-    ul{
+    ul {
       list-style-type: none;
       display: flex;
-      &:first-child{
+      &:first-child {
         flex-grow: 1;
       }
       li {
@@ -48,11 +58,13 @@
       }
     }
   }
+
   .brand {
     display: flex;
     align-items: center;
 
   }
+
   .logout {
     &:hover {
       cursor: pointer;
