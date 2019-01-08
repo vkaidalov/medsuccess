@@ -8,14 +8,13 @@
       </li>
     </ul>
     <ul>
-      <!--TODO: add `v-if` directives-->
-      <li>
+      <li v-if="!isLoggedIn">
         <router-link to="/register">Register</router-link>
       </li>
-      <li>
+      <li v-if="!isLoggedIn">
         <router-link to="/login">Login</router-link>
       </li>
-      <li @click="logout">
+      <li v-if="isLoggedIn" @click="logout">
         <span class="logout">Logout</span>
       </li>
     </ul>
@@ -23,13 +22,20 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+
   export default {
     name: "Navigation",
     methods: {
       logout: function() {
-        // TODO: write the function body
-        alert("I am logout!");
+        this.$store.dispatch('logout')
+          .then(() => {
+            this.$router.push('/')
+          })
       }
+    },
+    computed: {
+        ...mapGetters(['isLoggedIn'])
     }
   }
 </script>
