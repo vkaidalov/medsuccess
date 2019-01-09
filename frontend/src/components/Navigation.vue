@@ -8,6 +8,9 @@
       </li>
     </ul>
     <ul>
+      <li v-if="isLoggedIn">
+        <router-link to="/recipes">Recipes</router-link>
+      </li>
       <li v-if="!isLoggedIn">
         <router-link to="/register">Register</router-link>
       </li>
@@ -47,6 +50,7 @@
   }
 
   .navigation {
+    font-size: 20px;
     display: flex;
     color: white;
     align-items: center;

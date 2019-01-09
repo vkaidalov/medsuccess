@@ -3,10 +3,13 @@
     <form class="login" @submit.prevent="login">
       <h1>Sign in</h1>
       <label>Username</label>
+      <br/>
       <input required v-model="username" type="text"/>
+      <br/>
       <label>Password</label>
+      <br/>
       <input required v-model="password" type="password"/>
-      <hr/>
+      <br/>
       <button type="submit">Login</button>
     </form>
   </div>

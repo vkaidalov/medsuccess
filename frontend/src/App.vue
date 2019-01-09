@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <navigation/>
-    <router-view/>
+    <div class="content">
+      <router-view/>
+    </div>
   </div>
 </template>
 
@@ -25,7 +27,11 @@ body {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
+}
+
+.content {
+  width: 600px;
+  margin: 0 auto;
 }
 </style>

@@ -1,19 +1,21 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h1>Welcome to MedSuccess Web Application.</h1>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 // but I use ".." because of highlight
-import HelloWorld from "../components/HelloWorld.vue";
 
 export default {
   name: "home",
-  components: {
-    HelloWorld
-  }
 };
 </script>
+
+<style>
+.home {
+  text-align: center;
+}
+</style>
