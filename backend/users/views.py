@@ -19,6 +19,7 @@ class UserCreate(APIView):
                 token = Token.objects.create(user=user)
                 json = serializer.data
                 json['token'] = token.key
+                json['id'] = user.id
                 return Response(
                     json,
                     status=status.HTTP_201_CREATED
@@ -50,6 +51,6 @@ class UserLogin(APIView):
             )
         token, _ = Token.objects.get_or_create(user=user)
         return Response(
-            {'token': token.key},
+            {'token': token.key, 'id': user.id},
             status=status.HTTP_200_OK,
         )
