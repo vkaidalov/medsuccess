@@ -54,6 +54,13 @@
             android:textAlignment="center"
             />
 
+        <TextView
+            android:id="@+id/login_err_msg"
+            android:layout_width="match_parent"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="20sp"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
 
