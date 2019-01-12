@@ -4,7 +4,7 @@ import io.reactivex.Observable
 import java.net.HttpURLConnection
 import java.net.URL
 
-const val domain = "http://192.168.0.101:8000"
+const val domain = "http://192.168.43.60:8000"
 var token = ""
 
 fun createRequest(url: String) = Observable.create<String> {
