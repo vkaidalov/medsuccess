@@ -1,6 +1,7 @@
 package com.example.vadym.medsuccess
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.LinearLayout
@@ -35,6 +36,12 @@ class RecipeListActivity:Activity() {
             view.findViewById<TextView>(R.id.medicine).text = "Medicine: " + recipe.medicine
             view.findViewById<TextView>(R.id.reason).text = "Reason: " + recipe.reason
             view.findViewById<TextView>(R.id.doctor).text = "Doctor ID: " + recipe.doctor.toString()
+            view.setOnClickListener {
+                Log.e("CLICK", recipe.id.toString())
+                val i = Intent(this, RecipeDetailActivity::class.java)
+                i.putExtra("recipe_id", recipe.id.toString())
+                startActivity(i)
+            }
             list.addView(view)
         }
     }
