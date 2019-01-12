@@ -1,5 +1,6 @@
 package com.example.vadym.medsuccess
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +24,8 @@ class LoginActivity : AppCompatActivity() {
             if (username == "doctor" && password == "12345678") {
                 token = "82f66a158ef0997dd0a8e3abc7bc1374f9dbb018"
                 Log.e("login", "OK")
+                val i = Intent(this, RecipeListActivity::class.java)
+                startActivity(i)
             }
             else {
                 findViewById<TextView>(R.id.login_err_msg).text = "Wrong credentials! Try again."

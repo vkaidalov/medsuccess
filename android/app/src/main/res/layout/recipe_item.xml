@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_margin="10dip"
+        android:background="#82d69a"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:padding="10dip"
+            android:text="recipe"
+            android:textSize="20sp"
+            android:id="@+id/recipe_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:padding="10dip"
+            android:text="doctor"
+            android:textSize="20sp"
+            android:id="@+id/doctor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:padding="10dip"
+            android:text="medicine"
+            android:textSize="20sp"
+            android:id="@+id/medicine"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:padding="10dip"
+            android:text="reason"
+            android:textSize="20sp"
+            android:id="@+id/reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</FrameLayout>
