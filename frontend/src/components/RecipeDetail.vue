@@ -1,6 +1,8 @@
 <template>
   <div>
-    <p>ID: {{ id }}</p>
+    <router-link :to="'recipes/' + id">
+      <p>ID: {{ id }}</p>
+    </router-link>
     <p>Date created: {{ created }}</p>
     <p>Medicine: {{ medicine }}</p>
     <p>Reason: {{ reason }}</p>

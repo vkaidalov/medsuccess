@@ -4,6 +4,7 @@ import Home from "./views/Home.vue";
 import Login from "./views/Login";
 import Register from "./views/Register";
 import RecipeList from "./views/RecipeList";
+import Recipe from "./views/Recipe.vue";
 import store from "./store.js";
 
 Vue.use(Router);
@@ -29,6 +30,14 @@ let router = new Router({
       path: '/recipes',
       name: 'recipes',
       component: RecipeList,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/recipes/:id',
+      name: 'recipe',
+      component: Recipe,
       meta: {
         requiresAuth: true
       }
