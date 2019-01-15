@@ -1,53 +1,59 @@
 <template>
   <div>
     <h1>Recipe</h1>
-    <form class="editForm" @submit.prevent="editRecipe">
-      <p>ID: {{ id }}</p>
-      <p>Doctor ID: {{ doctor }}</p>
+    <div class="editForm">
+      <form @submit.prevent="editRecipe">
+        <p>ID: {{ id }}</p>
+        <p>Doctor ID: {{ doctor }}</p>
 
-      <label for="patient">Patient ID:</label>
-      <div>
-        <input id="patient" type="text" v-model="patient" autofocus>
+        <label for="patient">Patient ID:</label>
+        <div>
+          <input id="patient" type="text" v-model="patient" autofocus>
+        </div>
+
+        <p v-if="is_accepted != null">Is accepted by patient: {{ is_accepted }}</p>
+
+        <label for="medicine">Medicine:</label>
+        <div>
+          <input id="medicine" type="text" v-model="medicine" required>
+        </div>
+
+        <label for="reason">Reason:</label>
+        <div>
+          <input id="reason" type="text" v-model="reason" required>
+        </div>
+
+        <h2>Storage</h2>
+
+        <label for="mintemp">Minimal temperature:</label>
+        <div>
+          <input id="mintemp" type="text" v-model="min_temperature" required>
+        </div>
+
+        <label for="maxtemp">Maximal temperature:</label>
+        <div>
+          <input id="maxtemp" type="text" v-model="max_temperature" required>
+        </div>
+
+        <label for="minrh">Minimal RH:</label>
+        <div>
+          <input id="minrh" type="text" v-model="min_relative_humidity" required>
+        </div>
+
+        <label for="maxrh">Maximal RH:</label>
+        <div>
+          <input id="maxrh" type="text" v-model="max_relative_humidity" required>
+        </div>
+
+        <div>
+          <button type="submit">{{ id ? "Save changes" : "Create a new recipe" }}</button>
+        </div>
+      </form>
+      <div v-if="id">
+        <button @click="deleteRecipe">Delete the recipe</button>
       </div>
+    </div>
 
-      <p v-if="is_accepted != null">Is accepted by patient: {{ is_accepted }}</p>
-
-      <label for="medicine">Medicine:</label>
-      <div>
-        <input id="medicine" type="text" v-model="medicine" required>
-      </div>
-
-      <label for="reason">Reason:</label>
-      <div>
-        <input id="reason" type="text" v-model="reason" required>
-      </div>
-
-      <h2>Storage</h2>
-
-      <label for="mintemp">Minimal temperature:</label>
-      <div>
-        <input id="mintemp" type="text" v-model="min_temperature" required>
-      </div>
-
-      <label for="maxtemp">Maximal temperature:</label>
-      <div>
-        <input id="maxtemp" type="text" v-model="max_temperature" required>
-      </div>
-
-      <label for="minrh">Minimal RH:</label>
-      <div>
-        <input id="minrh" type="text" v-model="min_relative_humidity" required>
-      </div>
-
-      <label for="maxrh">Maximal RH:</label>
-      <div>
-        <input id="maxrh" type="text" v-model="max_relative_humidity" required>
-      </div>
-
-      <div>
-        <button type="submit">{{ id ? "Save changes" : "Create a new recipe" }}</button>
-      </div>
-    </form>
     <h1>Doses</h1>
     <ul>
       <li class="dose" v-for="dose in doses">
@@ -63,6 +69,7 @@
 <script>
   import axios from "axios";
   import store from "../store.js";
+  import router from "../router.js";
 
   export default {
     name: "Recipe.vue",
@@ -135,17 +142,35 @@
           })
         }
         else {
+          let newid = -1;
           axios({url: store.state.hostname + '/recipes/', data: data, method: 'POST' })
           .then(resp => {
             alert("Recipe is created!");
+            newid = resp.data.id;
+            console.log(newid);
             //resolve(resp);
           })
           .catch(err => {
             console.log(err.response);
             alert(err);
             //reject(err);
-          })
+          });
+          console.log(newid);
+          if (newid !== -1) {
+            router.go('/recipes/' + newid);
+          }
         }
+      },
+      deleteRecipe: function() {
+        axios({url: store.state.hostname + '/recipes/' + this.id + '/', data: {}, method: 'DELETE' })
+          .then(resp => {
+            alert("The recipe is deleted!");
+            //resolve(resp);
+          })
+          .catch(err => {
+            alert(err);
+            //reject(err);
+          })
       }
     }
   }
