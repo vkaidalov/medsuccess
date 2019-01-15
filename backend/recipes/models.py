@@ -17,6 +17,14 @@ class Recipe(models.Model):
     medicine = models.CharField(max_length=128)
     reason = models.TextField()
     is_accepted = models.BooleanField(null=True, default=None)
+    min_temperature = \
+        models.DecimalField(max_digits=6, decimal_places=2)
+    max_temperature = \
+        models.DecimalField(max_digits=6, decimal_places=2)
+    min_relative_humidity = \
+        models.DecimalField(max_digits=6, decimal_places=2)
+    max_relative_humidity = \
+        models.DecimalField(max_digits=6, decimal_places=2)
 
 
 class Dose(models.Model):
@@ -26,5 +34,18 @@ class Dose(models.Model):
         on_delete=models.CASCADE
     )
     date_assigned = models.DateTimeField()
-    date_consumed = models.DateTimeField(null=True, default=None)
+    is_consumed = models.BooleanField(default=False)
     quantity = models.DecimalField(max_digits=6, decimal_places=2)
+
+
+class Measure(models.Model):
+    recipe = models.ForeignKey(
+        'recipes.Recipe',
+        related_name='measures',
+        on_delete=models.CASCADE
+    )
+    date_measured = models.DateTimeField()
+    temperature = \
+        models.DecimalField(max_digits=6, decimal_places=2)
+    relative_humidity = \
+        models.DecimalField(max_digits=6, decimal_places=2)
