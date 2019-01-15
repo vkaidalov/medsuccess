@@ -41,6 +41,14 @@ let router = new Router({
       meta: {
         requiresAuth: true
       }
+    },
+    {
+      path: '/recipes/create',
+      name: 'recipe-create',
+      component: Recipe,
+      meta: {
+        requiresAuth: true
+      }
     }
   ]
 });

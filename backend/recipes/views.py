@@ -24,7 +24,7 @@ class RecipeList(APIView):
     def post(self, request):
         # TODO: Restrict a doctor to specify the `is_accepted` field.
         try:
-            if request.data['doctor'] != request.user.id:
+            if request.data['doctor'] != str(request.user.id):
                 return Response(
                     {
                         "doctor": ["Only the creator of the recipe can be the doctor."]

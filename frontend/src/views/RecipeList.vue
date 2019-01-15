@@ -1,5 +1,8 @@
 <template>
   <div class="recipe-list">
+    <router-link class="create" to="recipes/create">
+      <button>Create a new recipe</button>
+    </router-link>
     <recipe-detail
             class="recipe-detail"
             v-for="recipe in recipes"
@@ -30,7 +33,7 @@
       }
     },
     mounted: function() {
-      axios({url: 'http://localhost:8000/recipes/', data: {}, method: 'GET' })
+      axios({url: this.$store.state.hostname + '/recipes/', data: {}, method: 'GET' })
         .then(resp => {
           this.recipes = resp.data;
           // resolve(resp);
@@ -40,6 +43,17 @@
 </script>
 
 <style scoped>
+.create {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
 .recipe-detail {
   padding: 10px;
   margin: 10px;

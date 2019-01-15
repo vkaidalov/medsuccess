@@ -8,7 +8,8 @@ export default new Vuex.Store({
   state: {
     status: '',
     token: localStorage.getItem('token') || '',
-    id: 0
+    id: localStorage.getItem('id') || '',
+    hostname: 'http://localhost:8000'
   },
   mutations: {
     auth_request(state) {
@@ -31,7 +32,7 @@ export default new Vuex.Store({
     login({commit}, user) {
       return new Promise((resolve, reject) => {
         commit('auth_request');
-        axios({url: 'http://localhost:8000/users/login/', data: user, method: 'POST'})
+        axios({url: this.state.hostname + '/users/login/', data: user, method: 'POST'})
           .then(resp => {
             const token = resp.data.token;
             const id = resp.data.id;
@@ -52,7 +53,7 @@ export default new Vuex.Store({
     register({commit}, user){
       return new Promise((resolve, reject) => {
         commit('auth_request')
-        axios({url: 'http://localhost:8000/users/', data: user, method: 'POST' })
+        axios({url: this.state.hostname + '/users/', data: user, method: 'POST' })
           .then(resp => {
             const token = resp.data.token;
             const id = resp.data.id;
