@@ -1,4 +1,3 @@
-from django.utils.dateparse import parse_datetime
 from django.db.models import Q
 from django.http import Http404
 from rest_framework.views import APIView
@@ -271,7 +270,6 @@ class DoseDetail(APIView):
         )
 
     def put(self, request, fk, pk):
-        # TODO: Check if `date_consumed` >= `date_assigned`
         recipe = self.get_recipe(fk)
 
         if recipe.patient != request.user:
@@ -290,41 +288,35 @@ class DoseDetail(APIView):
         if dose.recipe != recipe:
             raise Http404
 
-        if dose.date_consumed is not None:
+        if dose.is_consumed:
             return Response(
                 {
-                    "date_consumed": ["The dose is already consumed."]
+                    "is_consumed": ["The dose is already consumed."]
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         try:
-            datetime = parse_datetime(request.data["date_consumed"])
+            if request.data["is_consumed"] == "true":
+                is_consumed = True
+            elif request.data["is_consumed"] == "false":
+                is_consumed = False
+            else:
+                return Response(
+                    {
+                        "is_consumed": ["The field must be true/false."]
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
         except KeyError:
             return Response(
                 {
-                    "date_consumed": ["The field is required."]
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        except ValueError:
-            return Response(
-                {
-                    "date_consumed": ["The field isn't a valid datetime."]
+                    "is_consumed": ["The field is required."]
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if datetime is None:
-            return Response(
-                {
-                    "date_consumed": ["The field isn't well formatted."]
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        dose.date_consumed = datetime
+        dose.is_consumed = is_consumed
         dose.save()
         serializer = DoseSerializer(dose)
         return Response(serializer.data)
-

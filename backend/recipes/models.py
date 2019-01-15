@@ -1,4 +1,5 @@
 from django.db import models
+from decimal import Decimal
 
 
 class Recipe(models.Model):
@@ -18,13 +19,13 @@ class Recipe(models.Model):
     reason = models.TextField()
     is_accepted = models.BooleanField(null=True, default=None)
     min_temperature = \
-        models.DecimalField(max_digits=6, decimal_places=2)
+        models.DecimalField(max_digits=6, decimal_places=2, default=Decimal('-10.0'))
     max_temperature = \
-        models.DecimalField(max_digits=6, decimal_places=2)
+        models.DecimalField(max_digits=6, decimal_places=2, default=Decimal('25.0'))
     min_relative_humidity = \
-        models.DecimalField(max_digits=6, decimal_places=2)
+        models.DecimalField(max_digits=6, decimal_places=2, default=Decimal('55.0'))
     max_relative_humidity = \
-        models.DecimalField(max_digits=6, decimal_places=2)
+        models.DecimalField(max_digits=6, decimal_places=2, default=Decimal('65.0'))
 
 
 class Dose(models.Model):
