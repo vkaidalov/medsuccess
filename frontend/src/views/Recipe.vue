@@ -55,11 +55,24 @@
     </div>
 
     <h1>Doses</h1>
+    <div v-if="id" class="editForm">
+      Create a dose
+      <form @submit.prevent="createDose">
+        <label for="date_assigned">Date assigned:</label>
+        <input id="date_assigned" type="text" v-model="date_assigned" required>
+        <label for="quantity">Quantity:</label>
+        <input id="quantity" type="text" v-model="quantity" required>
+        <label for="repeats">Repeat for number of days:</label>
+        <input id="repeats" type="number" v-model="repeats" required>
+        <div>
+          <button type="submit">Add doses</button>
+        </div>
+      </form>
+    </div>
     <ul>
       <li class="dose" v-for="dose in doses">
         <p>ID: {{ dose.id }}</p>
         <p>Date assigned: {{ dose.date_assigned }}</p>
-        <p>Date consumed: {{ dose.is_consumed }}</p>
         <p>Quantity: {{ dose.quantity }}</p>
       </li>
     </ul>
@@ -70,6 +83,8 @@
   import axios from "axios";
   import store from "../store.js";
   import router from "../router.js";
+  import dateFormat from "dateformat";
+
 
   export default {
     name: "Recipe.vue",
@@ -86,7 +101,10 @@
         min_relative_humidity: "55.0",
         max_relative_humidity: "55.0",
         doses: [],
-        recipe: {}
+        recipe: {},
+        date_assigned: "2019-01-17 13:30+02:00",
+        quantity: "1.0",
+        repeats: 1,
       }
     },
     mounted: function() {
@@ -171,6 +189,31 @@
             alert(err);
             //reject(err);
           })
+      },
+      createDose: function() {
+        Date.prototype.addDays = function(days) {
+          var date = new Date(this.valueOf());
+          date.setDate(date.getDate() + days);
+          return date;
+        };
+        let firstDate = new Date(this.date_assigned);
+        for (let i = 0; i < Number(this.repeats); ++i) {
+          let data = {
+            date_assigned: dateFormat(firstDate, "isoDateTime"),
+            quantity: this.quantity,
+            recipe: this.id
+          };
+          axios({url: store.state.hostname + '/recipes/' + this.id + '/doses/', data: data, method: 'POST' })
+          .then(resp => {
+            //resolve(resp);
+          })
+          .catch(err => {
+            console.log(err.response);
+            //reject(err);
+          });
+          firstDate = firstDate.addDays(1);
+        }
+        alert("Doses are added.");
       }
     }
   }
